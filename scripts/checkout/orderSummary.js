@@ -3,6 +3,7 @@ import { products, getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js'
 import { deliveryOptions, getDeliveryOption } from '../../data/deliveryOption.js';
+import { renderPaymentSummary } from './paymentSummary.js';
 
 export function renderOrderSummery() {
 
@@ -17,7 +18,7 @@ export function renderOrderSummery() {
 
         const deliveryOptionId = cartItem.deliveryOptionsId;
         const deliveryOption= getDeliveryOption(deliveryOptionId)
-        
+
         const today = dayjs()
         const deliveryDate = today.add(
             deliveryOption.deliveryDays,
@@ -121,9 +122,10 @@ export function renderOrderSummery() {
                 const productId = link.dataset.productId
                 removeFromCart(productId);
 
-                const container = document.querySelector(`.js-cart-item-container-${productId}`)
+                const container = document.querySelector(`.js-cart-item-container-${productId}`);
+                container.remove();
 
-                container.remove()
+                renderPaymentSummary();
             })
         })
 
@@ -135,6 +137,8 @@ export function renderOrderSummery() {
                 updateDeliveryOption(productId, deliveryOptionId);
 
                 renderOrderSummery();
+
+                renderPaymentSummary();
             })
         })
 }
